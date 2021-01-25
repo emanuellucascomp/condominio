@@ -17,6 +17,15 @@ public class Condominio {
     @OneToMany(mappedBy = "condominio")
     private List<Apartamento> apartamentos = new ArrayList<>();
 
+    public Condominio(){
+
+    }
+
+    public Condominio(String nome, String endereco){
+        this.nome = nome;
+        this.endereco = endereco;
+    }
+
     public Long getId() {
         return id;
     }

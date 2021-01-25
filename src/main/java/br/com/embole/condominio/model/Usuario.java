@@ -1,6 +1,8 @@
 package br.com.embole.condominio.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Usuario {
@@ -9,9 +11,12 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private String idade;
+    private String email;
+    private String senha;
     @OneToOne
     private Apartamento apartamento;
+    @OneToMany(mappedBy = "usuario")
+    private List<Postagem> postagens = new ArrayList<>();;
 
     public Long getId() {
         return id;
@@ -29,12 +34,20 @@ public class Usuario {
         this.nome = nome;
     }
 
-    public String getIdade() {
-        return idade;
+    public String getSenha() {
+        return senha;
     }
 
-    public void setIdade(String idade) {
-        this.idade = idade;
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Apartamento getApartamento() {
@@ -43,5 +56,13 @@ public class Usuario {
 
     public void setApartamento(Apartamento apartamento) {
         this.apartamento = apartamento;
+    }
+
+    public List<Postagem> getPostagens() {
+        return postagens;
+    }
+
+    public void setPostagens(List<Postagem> postagens) {
+        this.postagens = postagens;
     }
 }
