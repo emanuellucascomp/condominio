@@ -10,11 +10,19 @@ public class Apartamento {
     private Long id;
     private String bloco;
     private String numero;
-    private String quantidadeMoradores;
     @ManyToOne
     private Condominio condominio;
     @OneToOne
     private Usuario usuario;
+
+    public Apartamento(){
+
+    }
+
+    public Apartamento(String bloco, String numero){
+        this.bloco = bloco;
+        this.numero = numero;
+    }
 
     public Long getId() {
         return id;
@@ -38,14 +46,6 @@ public class Apartamento {
 
     public void setNumero(String numero) {
         this.numero = numero;
-    }
-
-    public String getQuantidadeMoradores() {
-        return quantidadeMoradores;
-    }
-
-    public void setQuantidadeMoradores(String quantidadeMoradores) {
-        this.quantidadeMoradores = quantidadeMoradores;
     }
 
     public Condominio getCondominio() {
