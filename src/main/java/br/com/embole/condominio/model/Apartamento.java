@@ -19,9 +19,11 @@ public class Apartamento {
 
     }
 
-    public Apartamento(String bloco, String numero){
+    public Apartamento(String bloco, String numero, Condominio condominio, Usuario usuario){
         this.bloco = bloco;
         this.numero = numero;
+        this.condominio = condominio;
+        this.usuario = usuario;
     }
 
     public Long getId() {

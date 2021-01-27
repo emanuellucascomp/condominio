@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
@@ -24,6 +26,8 @@ public class ApartamentoController {
 
     @Autowired
     private ApartamentoRepository apartamentoRepository;
+    @PersistenceContext
+    private EntityManager em;
 
     @GetMapping
     public Page<ApartamentoDTO> lista(@RequestParam(required = false) String nomeCondominio,
@@ -32,7 +36,7 @@ public class ApartamentoController {
                                               page = 0,
                                               size = 10) Pageable paginacao){
         if(nomeCondominio != null){
-            Page<Apartamento> apartamentos = apartamentoRepository.findByCondominioNome(nomeCondominio, paginacao);
+            Page<Apartamento> apartamentos = apartamentoRepository.findByCondominioNomeContaining(nomeCondominio, paginacao);
             return ApartamentoDTO.converter(apartamentos);
         }
         Page<Apartamento> apartamentos = apartamentoRepository.findAll(paginacao);
@@ -42,7 +46,7 @@ public class ApartamentoController {
     @PostMapping
     @Transactional
     public ResponseEntity<ApartamentoDTO> cadastrar(@RequestBody @Valid ApartamentoForm apartamentoForm, UriComponentsBuilder uriBuilder){
-        Apartamento apartamento = apartamentoForm.converter();
+        Apartamento apartamento = apartamentoForm.converter(em);
         apartamentoRepository.save(apartamento);
 
         URI uri = uriBuilder.path("/api/v1/apartamento/{id}").buildAndExpand(apartamento.getId()).toUri();
