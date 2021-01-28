@@ -4,6 +4,8 @@ import br.com.embole.condominio.model.Apartamento;
 import br.com.embole.condominio.model.Condominio;
 import br.com.embole.condominio.model.Usuario;
 import br.com.embole.condominio.repository.ApartamentoRepository;
+import br.com.embole.condominio.repository.CondominioRepository;
+import br.com.embole.condominio.repository.UsuarioRepository;
 
 import javax.persistence.EntityManager;
 import javax.validation.constraints.NotBlank;
@@ -53,16 +55,20 @@ public class ApartamentoForm {
         this.usuarioId = usuarioId;
     }
 
-    public Apartamento converter(EntityManager manager){
-        Condominio condominio = manager.find(Condominio.class, condominioId);
-        Usuario usuario = manager.find(Usuario.class, usuarioId);
+    public Apartamento converter(CondominioRepository condominioRepository, UsuarioRepository usuarioRepository){
+        Condominio condominio = condominioRepository.getOne(condominioId);
+        Usuario usuario = usuarioRepository.getOne(usuarioId);
         return new Apartamento(bloco, numero, condominio, usuario);
     }
 
-    public Apartamento atualizar(Long id, ApartamentoRepository apartamentoRepository){
+    public Apartamento atualizar(Long id, ApartamentoRepository apartamentoRepository, CondominioRepository condominioRepository, UsuarioRepository usuarioRepository){
         Apartamento apartamento = apartamentoRepository.getOne(id);
+        Condominio condominio = condominioRepository.getOne(condominioId);
+        Usuario usuario = usuarioRepository.getOne(usuarioId);
         apartamento.setBloco(this.bloco);
         apartamento.setNumero(this.numero);
+        apartamento.setCondominio(condominio);
+        apartamento.setUsuario(usuario);
 
         return apartamento;
     }

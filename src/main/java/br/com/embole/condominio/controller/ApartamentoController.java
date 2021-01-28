@@ -4,6 +4,8 @@ import br.com.embole.condominio.controller.dto.ApartamentoDTO;
 import br.com.embole.condominio.controller.form.ApartamentoForm;
 import br.com.embole.condominio.model.Apartamento;
 import br.com.embole.condominio.repository.ApartamentoRepository;
+import br.com.embole.condominio.repository.CondominioRepository;
+import br.com.embole.condominio.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +28,10 @@ public class ApartamentoController {
 
     @Autowired
     private ApartamentoRepository apartamentoRepository;
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private CondominioRepository condominioRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping
     public Page<ApartamentoDTO> lista(@RequestParam(required = false) String nomeCondominio,
@@ -46,7 +50,7 @@ public class ApartamentoController {
     @PostMapping
     @Transactional
     public ResponseEntity<ApartamentoDTO> cadastrar(@RequestBody @Valid ApartamentoForm apartamentoForm, UriComponentsBuilder uriBuilder){
-        Apartamento apartamento = apartamentoForm.converter(em);
+        Apartamento apartamento = apartamentoForm.converter(condominioRepository, usuarioRepository);
         apartamentoRepository.save(apartamento);
 
         URI uri = uriBuilder.path("/api/v1/apartamento/{id}").buildAndExpand(apartamento.getId()).toUri();
@@ -67,7 +71,7 @@ public class ApartamentoController {
     public ResponseEntity<ApartamentoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ApartamentoForm apartamentoForm){
         Optional<Apartamento> apartamento = apartamentoRepository.findById(id);
         if(apartamento.isPresent()){
-            Apartamento apartamentoAtualizado = apartamentoForm.atualizar(apartamento.get().getId(), apartamentoRepository);
+            Apartamento apartamentoAtualizado = apartamentoForm.atualizar(apartamento.get().getId(), apartamentoRepository, condominioRepository, usuarioRepository);
             return ResponseEntity.ok(new ApartamentoDTO(apartamentoAtualizado));
         }
         return ResponseEntity.notFound().build();

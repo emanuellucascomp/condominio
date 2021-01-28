@@ -17,6 +17,16 @@ public class Ambiente {
     @OneToMany(mappedBy = "ambiente")
     private List<Equipamento> equipamentos = new ArrayList<>();
 
+    public Ambiente(){
+
+    }
+
+    public Ambiente(String nome, Integer ocupacaoMaxima, Condominio condominio){
+        this.nome = nome;
+        this.ocupacaoMaxima = ocupacaoMaxima;
+        this.condominio = condominio;
+    }
+
     public Long getId() {
         return id;
     }
