@@ -15,6 +15,17 @@ public class Postagem {
     @ManyToOne
     private Usuario usuario;
 
+    public Postagem(){
+
+    }
+
+    public Postagem(String titulo, String corpo, Usuario usuario){
+        this.titulo = titulo;
+        this.corpo = corpo;
+        this.usuario = usuario;
+        this.moderado = false;
+    }
+
     public Long getId() {
         return id;
     }

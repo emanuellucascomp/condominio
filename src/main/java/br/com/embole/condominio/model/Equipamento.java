@@ -12,6 +12,15 @@ public class Equipamento {
     @ManyToOne
     private Ambiente ambiente;
 
+    public Equipamento(){
+
+    }
+
+    public Equipamento(String nome, Ambiente ambiente){
+        this.nome = nome;
+        this.ambiente = ambiente;
+    }
+
     public Long getId() {
         return id;
     }

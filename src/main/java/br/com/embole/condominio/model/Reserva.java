@@ -18,6 +18,18 @@ public class Reserva {
     private LocalDateTime horaInicio;
     private LocalDateTime horaFim;
 
+    public Reserva(){
+
+    }
+
+    public Reserva(Condominio condominio, Ambiente ambiente, Usuario usuario, LocalDateTime horaInicio, LocalDateTime horaFim){
+        this.condominio = condominio;
+        this.ambiente = ambiente;
+        this.usuario = usuario;
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+    }
+
     public Long getId() {
         return id;
     }

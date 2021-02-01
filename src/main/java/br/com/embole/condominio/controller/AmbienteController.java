@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/ambiente")
@@ -50,4 +51,38 @@ public class AmbienteController {
         URI uri = uriBuilder.path("/api/v1/ambiente/{id}").buildAndExpand(ambiente.getId()).toUri();
         return ResponseEntity.created(uri).body(new AmbienteDTO(ambiente));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AmbienteDTO> detalhar(@PathVariable Long id){
+        Optional<Ambiente> ambiente = ambienteRepository.findById(id);
+        if(ambiente.isPresent()){
+            return ResponseEntity.ok(new AmbienteDTO(ambiente.get()));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<AmbienteDTO> atualizar(@PathVariable Long id, @RequestBody @Valid AmbienteForm ambienteForm){
+        Optional<Ambiente> ambiente = ambienteRepository.findById(id);
+        if(ambiente.isPresent()){
+            Ambiente ambienteAtualizado = ambienteForm.atualizar(ambiente.get().getId(), ambienteRepository, condominioRepository);
+            return ResponseEntity.ok(new AmbienteDTO(ambienteAtualizado));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping
+    @Transactional
+    public ResponseEntity<?> remover(@PathVariable Long id){
+        Optional<Ambiente> ambiente = ambienteRepository.findById(id);
+        if(ambiente.isPresent()){
+            ambienteRepository.deleteById(ambiente.get().getId());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
+
 }
