@@ -55,4 +55,6 @@ public class PostagemForm {
 
         return postagem;
     }
+
+    //TODO parte de moderação
 }

@@ -42,4 +42,6 @@ public class ReservaController {
         Page<Reserva> reservas = reservaRepository.findAll(paginacao);
         return ReservaDTO.converter(reservas);
     }
+
+    //TODO resto dos métodos de CRUD de reserva
 }

@@ -1,0 +1,27 @@
+package br.com.embole.condominio.config.security;
+
+import br.com.embole.condominio.model.Usuario;
+import br.com.embole.condominio.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class AutenticacaoService implements UserDetailsService {
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(username);
+        if(usuario.isPresent()){
+            return usuario.get();
+        }
+        throw new UsernameNotFoundException("Usuário e/ou senha inválidos");
+    }
+}
