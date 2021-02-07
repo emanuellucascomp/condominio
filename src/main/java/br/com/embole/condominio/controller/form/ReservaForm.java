@@ -66,7 +66,7 @@ public class ReservaForm {
         this.horaFim = horaFim;
     }
 
-    public Reserva converter(CondominioRepository condominioRepository, AmbienteRepository ambienteRepository, UsuarioRepository usuarioRepository, LocalDateTime horaInicio, LocalDateTime horaFim){
+    public Reserva converter(CondominioRepository condominioRepository, AmbienteRepository ambienteRepository, UsuarioRepository usuarioRepository){
         Condominio condomino = condominioRepository.getOne(condominioId);
         Ambiente ambiente = ambienteRepository.getOne(ambienteId);
         Usuario usuario = usuarioRepository.getOne(usuarioId);

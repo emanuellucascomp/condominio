@@ -1,6 +1,10 @@
 package br.com.embole.condominio.controller;
 
+import br.com.embole.condominio.controller.dto.CondominioDTO;
 import br.com.embole.condominio.controller.dto.ReservaDTO;
+import br.com.embole.condominio.controller.form.CondominioForm;
+import br.com.embole.condominio.controller.form.ReservaForm;
+import br.com.embole.condominio.model.Condominio;
 import br.com.embole.condominio.model.Reserva;
 import br.com.embole.condominio.repository.AmbienteRepository;
 import br.com.embole.condominio.repository.CondominioRepository;
@@ -11,10 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/reserva")
@@ -43,5 +51,43 @@ public class ReservaController {
         return ReservaDTO.converter(reservas);
     }
 
-    //TODO resto dos métodos de CRUD de reserva
+    @PostMapping
+    public ResponseEntity<ReservaDTO> cadastrar(@RequestBody @Valid ReservaForm reservaForm, UriComponentsBuilder uriBuilder){
+        Reserva reserva = reservaForm.converter(condominioRepository, ambienteRepository, usuarioRepository);
+        reservaRepository.save(reserva);
+
+        URI uri = uriBuilder.path("/api/v1/reserva/{id}").buildAndExpand(reserva.getId()).toUri();
+        return ResponseEntity.created(uri).body(new ReservaDTO(reserva));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservaDTO> detalhar(@PathVariable Long id){
+        Optional<Reserva> reserva = reservaRepository.findById(id);
+        if(reserva.isPresent()){
+            return ResponseEntity.ok(new ReservaDTO(reserva.get()));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<ReservaDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ReservaForm reservaForm){
+        Optional<Reserva> reserva = reservaRepository.findById(id);
+        if(reserva.isPresent()){
+            Reserva reservaAtualizada = reservaForm.atualizar(reserva.get().getId(), reservaRepository, condominioRepository, ambienteRepository, usuarioRepository);
+            return ResponseEntity.ok(new ReservaDTO(reservaAtualizada));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> remover(@PathVariable Long id){
+        Optional<Reserva> reserva = reservaRepository.findById(id);
+        if(reserva.isPresent()){
+            reservaRepository.deleteById(reserva.get().getId());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

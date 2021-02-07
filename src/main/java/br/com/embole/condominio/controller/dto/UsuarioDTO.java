@@ -1,6 +1,7 @@
 package br.com.embole.condominio.controller.dto;
 
 import br.com.embole.condominio.model.Usuario;
+import org.springframework.data.domain.Page;
 
 public class UsuarioDTO {
 
@@ -12,6 +13,10 @@ public class UsuarioDTO {
         this.id = usuario.getId();
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
+    }
+
+    public static Page<UsuarioDTO> converter(Page<Usuario> usuarios) {
+        return usuarios.map(UsuarioDTO::new);
     }
 
     public Long getId() {
